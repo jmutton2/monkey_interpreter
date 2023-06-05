@@ -32,7 +32,7 @@ impl Lexer {
 
     pub fn read_identifier(&mut self) -> String {
         let position = self.position;
-        while Self::isLetter(self.ch) {
+        while Self::is_letter(self.ch) {
             self.read_char();
         }
         return self.input[position..self.position].to_string();
@@ -46,7 +46,7 @@ impl Lexer {
 
     pub fn read_number(&mut self) -> String {
         let position = self.position;
-        while Self::isDigit(self.ch) {
+        while Self::is_digit(self.ch) {
             self.read_char();
         }
         return self.input[position..self.position].to_string();
@@ -61,7 +61,7 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Token {
-        let mut tok: Token = Token::New();
+        let mut tok: Token = Token::new();
 
         self.skip_whitepace();
 
@@ -105,11 +105,11 @@ impl Lexer {
             '>' => tok = Token::new_token(GT.to_string(), self.ch.to_string()),
             '0' => tok = Token::new_token(EOF.to_string(), "".to_string()),
             _ => {
-                if Self::isLetter(self.ch) {
+                if Self::is_letter(self.ch) {
                     tok.literal = self.read_identifier();
                     tok.token_type = Token::lookup_identifier(tok.literal.to_string());
                     return tok;
-                } else if Self::isDigit(self.ch) {
+                } else if Self::is_digit(self.ch) {
                     tok = Token::new_token(INT.to_string(), self.read_number());
                     return tok;
                 } else {
@@ -122,11 +122,11 @@ impl Lexer {
         return tok;
     }
 
-    pub fn isLetter(ch: char) -> bool {
+    pub fn is_letter(ch: char) -> bool {
         return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_';
     }
 
-    pub fn isDigit(ch: char) -> bool {
+    pub fn is_digit(ch: char) -> bool {
         return '0' <= ch && ch <= '9';
     }
 }

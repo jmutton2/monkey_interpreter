@@ -1,6 +1,6 @@
 use crate::lexer::lexer::*;
 use crate::token::token::*;
-use std::io::{self, Write};
+use std::io::Write;
 
 const PROMPT: &str = ">> ";
 
@@ -9,7 +9,7 @@ pub fn start() {
         let mut line: String = String::new();
         print!("{}", PROMPT);
         std::io::stdout().flush().unwrap();
-        let b1 = std::io::stdin().read_line(&mut line).unwrap();
+        std::io::stdin().read_line(&mut line).unwrap();
 
         let mut l = Lexer::new(line);
 

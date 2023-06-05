@@ -2,11 +2,9 @@ mod lexer;
 mod repl;
 mod token;
 
-use crate::lexer::*;
 use crate::repl::repl::start;
-use crate::token::*;
 
 fn main() {
-    println!("Hello, world!");
+    println!("Welcome to the Monkey Interpreter. Made blazingly fast with Rust!");
     start();
 }

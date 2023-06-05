@@ -1,4 +1,4 @@
-use crate::lexer::lexer::*;
+use super::lexer::Lexer;
 use crate::token::token::*;
 
 struct TestToken {

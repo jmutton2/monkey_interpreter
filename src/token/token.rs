@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 pub const ILLEGAL: &str = "ILLEGAL";
 pub const EOF: &str = "EOF";
 
@@ -58,7 +56,7 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn New() -> Token {
+    pub fn new() -> Token {
         Token {
             token_type: TokenType {
                 token_type: EOF.to_string(),
