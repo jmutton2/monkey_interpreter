@@ -19,6 +19,16 @@ pub fn test_next_token() {
         let result = add(five, ten);
         !-/*5;
         5 < 10 > 5;
+
+        if (5 < 10) {
+            return true;
+            } else {
+            return false;
+        }
+
+        10 == 10;
+        10 != 9;
+            
     "
     .to_string();
 
@@ -308,6 +318,156 @@ pub fn test_next_token() {
         TestToken {
             expected_type: TokenType {
                 token_type: (SEMICOLON.to_string()),
+            },
+            expected_literal: ";".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (IF.to_string()),
+            },
+            expected_literal: "if".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (LPAREN.to_string()),
+            },
+            expected_literal: "(".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (INT.to_string()),
+            },
+            expected_literal: "5".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (LT.to_string()),
+            },
+            expected_literal: "<".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (INT.to_string()),
+            },
+            expected_literal: "10".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (RPAREN.to_string()),
+            },
+            expected_literal: ")".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (LBRACE.to_string()),
+            },
+            expected_literal: "{".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (RETURN.to_string()),
+            },
+            expected_literal: "return".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (TRUE.to_string()),
+            },
+            expected_literal: "true".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (SEMICOLON.to_string()),
+            },
+            expected_literal: ";".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (RBRACE.to_string()),
+            },
+            expected_literal: "}".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (ELSE.to_string()),
+            },
+            expected_literal: "else".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (LBRACE.to_string()),
+            },
+            expected_literal: "{".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (RETURN.to_string()),
+            },
+            expected_literal: "return".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (FALSE.to_string()),
+            },
+            expected_literal: "false".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (SEMICOLON.to_string()),
+            },
+            expected_literal: ";".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: (RBRACE.to_string()),
+            },
+            expected_literal: "}".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: INT.to_string(),
+            },
+            expected_literal: "10".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: EQUALS.to_string(),
+            },
+            expected_literal: "==".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: INT.to_string(),
+            },
+            expected_literal: "10".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: SEMICOLON.to_string(),
+            },
+            expected_literal: ";".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: INT.to_string(),
+            },
+            expected_literal: "10".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: NOT_EQUALS.to_string(),
+            },
+            expected_literal: "!=".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: INT.to_string(),
+            },
+            expected_literal: "9".to_string(),
+        },
+        TestToken {
+            expected_type: TokenType {
+                token_type: SEMICOLON.to_string(),
             },
             expected_literal: ";".to_string(),
         },

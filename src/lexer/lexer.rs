@@ -52,13 +52,45 @@ impl Lexer {
         return self.input[position..self.position].to_string();
     }
 
+    pub fn peek_char(&mut self) -> char {
+        if self.read_position >= self.input.len() {
+            return '0';
+        } else {
+            return self.input.as_bytes()[self.read_position] as char;
+        }
+    }
+
     pub fn next_token(&mut self) -> Token {
         let mut tok: Token = Token::New();
 
         self.skip_whitepace();
 
         match self.ch {
-            '=' => tok = Token::new_token(ASSIGN.to_string(), self.ch.to_string()),
+            '=' => {
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    let new_string = format!("{}{}", ch, self.ch);
+                    print!("{:?}", new_string);
+
+                    tok = Token::new_token(EQUALS.to_string(), new_string);
+                } else {
+                    tok = Token::new_token(ASSIGN.to_string(), self.ch.to_string())
+                }
+            }
+            '!' => {
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    let new_string = format!("{}{}", ch, self.ch);
+                    print!("{:?}", new_string);
+
+                    tok = Token::new_token(NOT_EQUALS.to_string(), new_string);
+                } else {
+                    tok = Token::new_token(BANG.to_string(), self.ch.to_string());
+                }
+            }
+
             ';' => tok = Token::new_token(SEMICOLON.to_string(), self.ch.to_string()),
             '(' => tok = Token::new_token(LPAREN.to_string(), self.ch.to_string()),
             ')' => tok = Token::new_token(RPAREN.to_string(), self.ch.to_string()),
@@ -71,7 +103,6 @@ impl Lexer {
             '*' => tok = Token::new_token(ASTERISK.to_string(), self.ch.to_string()),
             '<' => tok = Token::new_token(LT.to_string(), self.ch.to_string()),
             '>' => tok = Token::new_token(GT.to_string(), self.ch.to_string()),
-            '!' => tok = Token::new_token(BANG.to_string(), self.ch.to_string()),
             '0' => tok = Token::new_token(EOF.to_string(), "".to_string()),
             _ => {
                 if Self::isLetter(self.ch) {
