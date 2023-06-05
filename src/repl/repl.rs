@@ -15,11 +15,7 @@ pub fn start() {
 
         let mut tok = l.next_token();
 
-        while (tok.token_type
-            != TokenType {
-                token_type: EOF.to_string(),
-            })
-        {
+        while tok.token_type != EOF.to_string() {
             print!("{}\n", tok);
 
             tok = l.next_token();

@@ -32,21 +32,15 @@ impl Lexer {
 
     pub fn read_identifier(&mut self) -> String {
         let position = self.position;
-        while Self::is_letter(self.ch) {
+        while self.ch.is_ascii_alphabetic() || self.ch == '_' {
             self.read_char();
         }
         return self.input[position..self.position].to_string();
     }
 
-    pub fn skip_whitepace(&mut self) {
-        while self.ch == ' ' || self.ch == '\t' || self.ch == '\n' || self.ch == '\r' {
-            self.read_char();
-        }
-    }
-
     pub fn read_number(&mut self) -> String {
         let position = self.position;
-        while Self::is_digit(self.ch) {
+        while self.ch.is_ascii_digit() {
             self.read_char();
         }
         return self.input[position..self.position].to_string();
@@ -57,6 +51,12 @@ impl Lexer {
             return '0';
         } else {
             return self.input.as_bytes()[self.read_position] as char;
+        }
+    }
+
+    pub fn skip_whitepace(&mut self) {
+        while self.ch.is_ascii_whitespace() {
+            self.read_char();
         }
     }
 
@@ -105,11 +105,11 @@ impl Lexer {
             '>' => tok = Token::new_token(GT.to_string(), self.ch.to_string()),
             '0' => tok = Token::new_token(EOF.to_string(), "".to_string()),
             _ => {
-                if Self::is_letter(self.ch) {
+                if self.ch.is_ascii_alphabetic() {
                     tok.literal = self.read_identifier();
                     tok.token_type = Token::lookup_identifier(tok.literal.to_string());
                     return tok;
-                } else if Self::is_digit(self.ch) {
+                } else if self.ch.is_ascii_digit() {
                     tok = Token::new_token(INT.to_string(), self.read_number());
                     return tok;
                 } else {
@@ -121,12 +121,115 @@ impl Lexer {
         self.read_char();
         return tok;
     }
+}
 
-    pub fn is_letter(ch: char) -> bool {
-        return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_';
-    }
+#[test]
+pub fn test_next_token() {
+    let input = "
+        let five = 5;
+        let ten = 10;
 
-    pub fn is_digit(ch: char) -> bool {
-        return '0' <= ch && ch <= '9';
+        let add = fn(x, y) {
+            x + y;
+        };
+
+        let result = add(five, ten);
+        !-/*5;
+        5 < 10 > 5;
+
+        if (5 < 10) {
+            return true;
+            } else {
+            return false;
+        }
+
+        10 == 10;
+        10 != 9;
+            
+    "
+    .to_string();
+
+    let tests = [
+        TokenType::Let,
+        TokenType::Ident(String::from("five")),
+        TokenType::Assign,
+        TokenType::Int(String::from("5")),
+        TokenType::Semicolon,
+        TokenType::Let,
+        TokenType::Ident(String::from("ten")),
+        TokenType::Assign,
+        TokenType::Int(String::from("10")),
+        TokenType::Semicolon,
+        TokenType::Let,
+        TokenType::Ident(String::from("add")),
+        TokenType::Assign,
+        TokenType::Function,
+        TokenType::Lparen,
+        TokenType::Ident(String::from("x")),
+        TokenType::Comma,
+        TokenType::Ident(String::from("y")),
+        TokenType::Rparen,
+        TokenType::Lbrace,
+        TokenType::Ident(String::from("x")),
+        TokenType::Plus,
+        TokenType::Ident(String::from("y")),
+        TokenType::Semicolon,
+        TokenType::Rbrace,
+        TokenType::Semicolon,
+        TokenType::Let,
+        TokenType::Ident(String::from("result")),
+        TokenType::Assign,
+        TokenType::Ident(String::from("add")),
+        TokenType::Lparen,
+        TokenType::Ident(String::from("five")),
+        TokenType::Comma,
+        TokenType::Ident(String::from("ten")),
+        TokenType::Rparen,
+        TokenType::Semicolon,
+        TokenType::Bang,
+        TokenType::Minus,
+        TokenType::Slash,
+        TokenType::Asterisk,
+        TokenType::Int(String::from("5")),
+        TokenType::Semicolon,
+        TokenType::Int(String::from("5")),
+        TokenType::Lt,
+        TokenType::Int(String::from("10")),
+        TokenType::Gt,
+        TokenType::Int(String::from("5")),
+        TokenType::Semicolon,
+        TokenType::If,
+        TokenType::Lparen,
+        TokenType::Int(String::from("5")),
+        TokenType::Lt,
+        TokenType::Int(String::from("10")),
+        TokenType::Rparen,
+        TokenType::Lbrace,
+        TokenType::Return,
+        TokenType::True,
+        TokenType::Semicolon,
+        TokenType::Rbrace,
+        TokenType::Else,
+        TokenType::Lbrace,
+        TokenType::Return,
+        TokenType::False,
+        TokenType::Semicolon,
+        TokenType::Rbrace,
+        TokenType::Int(String::from("10")),
+        TokenType::Equals,
+        TokenType::Int(String::from("10")),
+        TokenType::Semicolon,
+        TokenType::Int(String::from("10")),
+        TokenType::Noteqauls,
+        TokenType::Int(String::from("9")),
+        TokenType::Semicolon,
+        TokenType::Eof,
+    ];
+
+    let mut lex = Lexer::new(input);
+
+    for token in tests {
+        let next_token = lex.next_token();
+        assert_eq!(Token::process_token(token), next_token);
     }
 }
