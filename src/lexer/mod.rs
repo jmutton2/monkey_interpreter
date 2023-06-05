@@ -1,3 +1,2 @@
+pub mod lexer;
 mod lexer_test;
-mod lexer;
-

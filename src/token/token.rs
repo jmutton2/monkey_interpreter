@@ -94,3 +94,15 @@ impl PartialEq<TokenType> for TokenType {
         self.token_type == other.token_type
     }
 }
+
+impl std::fmt::Display for TokenType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.token_type)
+    }
+}
+
+impl std::fmt::Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{{Type: {} Literal: {}}}", self.token_type, self.literal)
+    }
+}
