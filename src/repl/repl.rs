@@ -15,7 +15,7 @@ pub fn start() {
 
         let mut tok = l.next_token();
 
-        while tok.token_type != EOF.to_string() {
+        while tok != Token::Eof {
             print!("{}\n", tok);
 
             tok = l.next_token();

@@ -1,35 +1,73 @@
 use crate::token::token::*;
-
+#[derive(Debug)]
 pub struct Node {}
 
-trait NodeTrait {
+pub trait NodeTrait {
     fn token_literal(&self) -> String;
 }
 
+impl PartialEq<Node> for Node {
+    fn eq(&self, other: &Node) -> bool {
+       true 
+    }
+}
+
+#[derive(Debug)]
 pub struct Statement {
     pub node: Node,
 }
 
+#[derive(Debug)]
+pub enum StatementType {
+    LetStatement(LetStatement),
+    NilStatement
+}
+
+impl PartialEq<StatementType> for StatementType {
+    fn eq(&self, other: &StatementType) -> bool {
+        match (self, other) {
+            (StatementType::NilStatement,  StatementType::NilStatement) => true,
+            (StatementType::LetStatement(ident1), StatementType::LetStatement(ident2))
+             => ident1 == ident2,
+            _ => false,
+        }
+    }
+}
+
 trait StatementTrait {
-    fn statement_node(&mut self);
+    fn statement_node(&self);
+}
+
+impl NodeTrait for StatementType {
+    fn token_literal(&self) -> String {
+        "let".to_string()
+    }
 }
 
 impl NodeTrait for Statement {
     fn token_literal(&self) -> String {
-        "test".to_string()
+        "let".to_string()
     }
 }
 
-struct Expression {
-    node: Node,
+#[derive(Debug)]
+pub struct Expression {
+    pub node: Node,
 }
 
 trait ExpressionTrait {
     fn expression_node(&mut self);
 }
 
+impl PartialEq<Expression> for Expression {
+    fn eq(&self, other: &Expression) -> bool {
+        self.node == other.node
+    }
+}
+
+#[derive(Debug)]
 pub struct Program {
-    pub statements: Vec<Statement>,
+    pub statements: Vec<StatementType>,
 }
 
 impl NodeTrait for Program {
@@ -41,10 +79,10 @@ impl NodeTrait for Program {
         }
     }
 }
-
-struct Identifier {
-    token: Token,
-    value: String,
+#[derive(Debug)]
+pub struct Identifier {
+    pub token: Token,
+    pub value: String,
 }
 
 impl ExpressionTrait for Identifier {
@@ -53,22 +91,37 @@ impl ExpressionTrait for Identifier {
 
 impl NodeTrait for Identifier {
     fn token_literal(&self) -> String {
-        return self.token.literal.to_owned();
+        return self.token.as_literal();
     }
 }
 
-struct LetStatement {
-    token: Token,
-    name: *mut Identifier,
-    value: Expression,
+impl PartialEq<Identifier> for Identifier {
+    fn eq(&self, other: &Identifier) -> bool {
+        (self.token == other.token) && (self.value == other.value)
+
+    }
+}
+
+#[derive(Debug)]
+pub struct LetStatement {
+    pub token: Token, 
+    pub name: Identifier,
+    pub value: Expression,
 }
 
 impl StatementTrait for LetStatement {
-    fn statement_node(&mut self) {}
+    fn statement_node(&self) {}
 }
 
 impl NodeTrait for LetStatement {
     fn token_literal(&self) -> String {
-        return self.token.literal.to_owned();
+        return self.token.as_literal();
+    }
+}
+
+impl PartialEq<LetStatement> for LetStatement {
+    fn eq(&self, other: &LetStatement) -> bool {
+        (self.token == other.token) && (self.name == other.name) && (self.value == other.value)
+
     }
 }
