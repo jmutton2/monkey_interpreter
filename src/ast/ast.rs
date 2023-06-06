@@ -8,7 +8,7 @@ pub trait NodeTrait {
 
 impl PartialEq<Node> for Node {
     fn eq(&self, other: &Node) -> bool {
-       true 
+        true
     }
 }
 
@@ -20,15 +20,18 @@ pub struct Statement {
 #[derive(Debug)]
 pub enum StatementType {
     LetStatement(LetStatement),
-    NilStatement
+    ReturnStatement(ReturnStatement),
+    NilStatement,
 }
 
 impl PartialEq<StatementType> for StatementType {
     fn eq(&self, other: &StatementType) -> bool {
         match (self, other) {
-            (StatementType::NilStatement,  StatementType::NilStatement) => true,
-            (StatementType::LetStatement(ident1), StatementType::LetStatement(ident2))
-             => ident1 == ident2,
+            (StatementType::NilStatement, StatementType::NilStatement) => true,
+            (StatementType::ReturnStatement(ident1), StatementType::ReturnStatement(ident2)) => ident1 == ident2,
+            (StatementType::LetStatement(ident1), StatementType::LetStatement(ident2)) => 
+                ident1 == ident2,
+            
             _ => false,
         }
     }
@@ -98,13 +101,12 @@ impl NodeTrait for Identifier {
 impl PartialEq<Identifier> for Identifier {
     fn eq(&self, other: &Identifier) -> bool {
         (self.token == other.token) && (self.value == other.value)
-
     }
 }
 
 #[derive(Debug)]
 pub struct LetStatement {
-    pub token: Token, 
+    pub token: Token,
     pub name: Identifier,
     pub value: Expression,
 }
@@ -122,6 +124,27 @@ impl NodeTrait for LetStatement {
 impl PartialEq<LetStatement> for LetStatement {
     fn eq(&self, other: &LetStatement) -> bool {
         (self.token == other.token) && (self.name == other.name) && (self.value == other.value)
+    }
+}
 
+#[derive(Debug)]
+pub struct ReturnStatement {
+    pub token: Token,
+    pub value: Expression,
+}
+
+impl StatementTrait for ReturnStatement {
+    fn statement_node(&self) {}
+}
+
+impl NodeTrait for ReturnStatement {
+    fn token_literal(&self) -> String {
+        return self.token.as_literal();
+    }
+}
+
+impl PartialEq<ReturnStatement> for ReturnStatement {
+    fn eq(&self, other: &ReturnStatement) -> bool {
+        (self.token == other.token) && (self.value == other.value)
     }
 }

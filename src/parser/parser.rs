@@ -20,7 +20,6 @@ impl Parser {
 
         p.next_token();
         p.next_token();
-        println!("Status Check: {} {}", p.current_token, p.peek_token);
 
         return p;
     }
@@ -51,6 +50,7 @@ impl Parser {
     fn parse_statement(&mut self) -> StatementType {
         match self.current_token {
             Token::Let => self.parse_let_statement(),
+            Token::Return => self.parse_return_statement(),
             _ => StatementType::NilStatement,
         }
     }
@@ -71,8 +71,6 @@ impl Parser {
             value: Expression { node: Node {} },
         });
 
-        println!("");
-
         if !self.expect_peek(Token::Assign) {
             return StatementType::NilStatement;
         }
@@ -80,6 +78,17 @@ impl Parser {
         while !self.current_token_is(&Token::Semicolon) {
             self.next_token();
         }
+
+        return stmt;
+    }
+
+    fn parse_return_statement(&mut self) -> StatementType {
+        let stmt: StatementType = StatementType::ReturnStatement(ReturnStatement {
+            token: Token::Return,
+            value: Expression { node: Node {} },
+        });
+
+        self.next_token();
 
         return stmt;
     }
@@ -131,9 +140,9 @@ impl Parser {
 #[test]
 fn test_let_statements() {
     let input = "
-        let x 5;
-        let = 10;
-        let 838383;
+        let x = 5;
+        let y = 10;
+        let z = 838383;
     "
     .to_string();
 
@@ -164,4 +173,31 @@ fn test_let_statement(s: &StatementType, name: String) -> bool {
     assert_eq!(s.token_literal(), "let".to_string());
 
     return true;
+}
+
+#[test]
+fn test_retun_statements() {
+    let input = "
+        return 5;
+        return 10;
+        return 993322;
+    "
+    .to_string();
+
+    let lex = Lexer::new(input);
+    let mut p: Parser = Parser::new(lex);
+
+    let program = p.parse_program();
+
+    assert_eq!(program.statements.len(), 3);
+
+    for stmt in program.statements {
+        assert_eq!(
+            stmt,
+            StatementType::ReturnStatement(ReturnStatement {
+                token: Token::Return,
+                value: Expression { node: Node {} }
+            })
+        );
+    }
 }
