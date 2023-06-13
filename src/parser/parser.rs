@@ -142,7 +142,7 @@ fn test_let_statements() {
     let input = "
         let x = 5;
         let y = 10;
-        let z = 838383;
+        let foobar = 838383;
     "
     .to_string();
 
@@ -151,10 +151,6 @@ fn test_let_statements() {
 
     let program: Program = p.parse_program();
     Parser::check_parse_errors(p);
-
-    // if program = None {
-
-    // }
 
     assert_eq!(program.statements.len(), 3);
 
@@ -171,6 +167,17 @@ fn test_let_statements() {
 
 fn test_let_statement(s: &StatementType, name: String) -> bool {
     assert_eq!(s.token_literal(), "let".to_string());
+
+    let stmt = StatementType::LetStatement(LetStatement {
+        token: Token::Let,
+        name: Identifier {
+            token: Token::Let,
+            value: name,
+        },
+        value: Expression { node: { Node {} } },
+    });
+
+    assert_eq!(s, &stmt);
 
     return true;
 }
